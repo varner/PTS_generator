@@ -1,0 +1,26 @@
+#number of landmark points
+48
+#number of paths
+1
+#to what point / is it a cycle or not
+48 0
+# Initial positions
+#r.y -= r.height*?
+0
+#r.x -= r.width*?
+0
+#r.width *= ?
+1
+#r.height *= ?
+1
+
+# More explanations on the following will be given later
+#step?*100/sqrt(area)
+1.0
+
+# init scale ratio when searching
+0
+# init X offset when searching
+0
+# init Y offset when searching
+0
