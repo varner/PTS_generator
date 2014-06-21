@@ -1,0 +1,12 @@
+notes for PTS generator
+=======================
+
+- find suitable place for the subsection
+	- be able to mark where mouse is
+	- be able to mark where points are
+	---> sqrt((x1 - x2)**2 + (y1 - y2)**2) = distance
+- highlight point that mouse is hovering by
+	- be able to manipulate points that are hovered over
+- fix HUD
+	- turn on/off
+	- fix keyboard controls

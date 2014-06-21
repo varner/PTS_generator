@@ -27,8 +27,11 @@ class testApp : public ofBaseApp{
         ofDirectory dir;
         vector<ofImage> images;
         vector< vector<ofVec2f> >  points;
-        string path;    // path to images
-        int curr;       // current image index
+        string path;        // path to images
+        int curr;           // current image index
+        bool highlighted;   // is something highlighted
+        bool dragged;       // dragging things
+        int hlIndex;        // highlight index
     
 };
 
