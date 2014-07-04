@@ -15,6 +15,9 @@ void testApp::setup(){
     } else printf("??? where the fuck is the folder 'imgs'??\n");
     highlighted = false;
     ofBackground(ofColor::white);
+    hud = true;
+    subX = 0;
+    subY = 200;
 }
 
 //--------------------------------------------------------------
@@ -83,19 +86,23 @@ void testApp::draw(){
 
     if (dir.size() > 0){
         ofSetColor(255,255,255);
-        images[curr].draw(0,0);
+        images[curr].draw(0,0); // draw the fuckin img
         
-        images[curr].drawSubsection(0, 200, 100, 100, mouseX - 25, mouseY - 25, 50, 50);
+        if (hud == true) { // HUD shit
+            ofRect(subX - 2, subY - 2, 104, 104);
+            images[curr].drawSubsection(subX, subY, 100, 100, mouseX - 25, mouseY - 25, 50, 50);
         
-        stringstream ss;
-        ss << dir.getPath(curr) + ".pts" << endl;
-        ss << "total number of points: " << points[curr].size() << endl;
-        if (hlIndex >= 0) {
-            ss << labels[hlIndex] << endl;
-        } else { ss << "" << endl; }
-        ofDrawBitmapString(ss.str().c_str(), 20, 20);
+            stringstream ss;
+            ss << dir.getPath(curr) + ".pts" << endl;
+            ss << "total number of points: " << points[curr].size() << endl;
+            if (hlIndex >= 0) {
+                ss << labels[hlIndex] << endl;
+            } else { ss << "" << endl; }
+            ofDrawBitmapString(ss.str().c_str(), 20, 20);
+        }
     }
-    if (points[curr].size() > 0) {
+    
+    if (points[curr].size() > 0) { //draw the points if there are any
         drawPoints(points[curr]);
 
     }
@@ -125,6 +132,11 @@ void testApp::drawPoints(vector<ofVec2f> pts){
             if (0 < i) {
                 ofLine(pts[i-1].x, pts[i-1].y, cx, cy);
             }
+            boundsX = points[curr][i].x - (mouseX - 25);
+            boundsY = points[curr][i].y - (mouseY - 25);
+            if(0 <= boundsX && boundsX <= 50 && 0 <= boundsY && boundsY <= 50) {
+                ofEllipse(subX + 2*boundsX, subY + 2*boundsY, 10, 10);
+            }
         }
     }
 }
@@ -148,11 +160,14 @@ void testApp::keyPressed(int key){
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
     switch(key) {
+        case 'h': // toggle HUD
+            hud = !hud;
+            break;
         case 'u': //undo
             if (points[curr].size() > 0)
                 points[curr].erase(points[curr].end());
             break;
-        case 'f': //increment the files
+        case 'k': //increment the files
             dragged = false;
             highlighted = false;
             if (dir.numFiles() > 0)
@@ -163,6 +178,14 @@ void testApp::keyReleased(int key){
                 images.back().loadImage(filePath);
             
                 points.push_back(vector<ofVec2f>());
+            }
+            break;
+        case 'j': //decrement the files
+            dragged = false;
+            highlighted = false;
+            if (dir.numFiles() > 0) {
+                curr = (curr - 1) % dir.numFiles();
+                if (curr < 0) curr = 0;
             }
             break;
         case 'e': //export current file
@@ -199,7 +222,7 @@ void testApp::mouseReleased(int x, int y, int button){
     if (button == 0) {
         if (dragged == true) {
             dragged = false;
-        } else {
+        }  else {
             ofVec2f v(x,y);
             points[curr].push_back(v);
         }

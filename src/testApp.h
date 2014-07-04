@@ -29,8 +29,13 @@ class testApp : public ofBaseApp{
         vector< vector<ofVec2f> >  points;
         string path;        // path to images
         int curr;           // current image index
+        int subX;           // subsection window thing position
+        int subY;
+        int boundsX;
+        int boundsY;
         bool highlighted;   // is something highlighted
         bool dragged;       // dragging things
+        bool hud;           // whats on the tin
         int hlIndex;        // highlight index
     
 };
