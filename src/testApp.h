@@ -27,14 +27,18 @@ class testApp : public ofBaseApp{
         ofDirectory dir;
         vector<ofImage> images;
         vector< vector<ofVec2f> >  points;
+        vector<ofVec3f> subbed;
         string path;        // path to images
         int curr;           // current image index
         int subX;           // subsection window thing position
         int subY;
+        int dirX;
+        int dirY;
         int boundsX;
         int boundsY;
         bool highlighted;   // is something highlighted
         bool dragged;       // dragging things
+        bool isExported;    // checks to see if current is exported;
         bool hud;           // whats on the tin
         int hlIndex;        // highlight index
     

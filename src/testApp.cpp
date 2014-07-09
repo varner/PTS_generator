@@ -10,8 +10,7 @@ void testApp::setup(){
         string filePath = dir.getPath(curr);
         images.push_back(ofImage());
         images.back().loadImage(filePath);
-            
-            points.push_back(vector<ofVec2f>());
+        points.push_back(vector<ofVec2f>());
     } else printf("??? where the fuck is the folder 'imgs'??\n");
     highlighted = false;
     ofBackground(ofColor::white);
@@ -22,6 +21,7 @@ void testApp::setup(){
 
 //--------------------------------------------------------------
 void testApp::update(){
+    subbed.clear();
     if (points[curr].size() > 0) {
         highlighted = false;
         for (int i = 0; i < points[curr].size(); i++) {
@@ -29,6 +29,11 @@ void testApp::update(){
             hlIndex = i;
             highlighted = true;
             } else if (i == points[curr].size() - 1) { hlIndex == -1; }
+            boundsX = points[curr][i].x - (mouseX - 25);
+            boundsY = points[curr][i].y - (mouseY - 25);
+            if(0 <= boundsX && boundsX <= 50 && 0 <= boundsY && boundsY <= 50) {
+                subbed.push_back(ofVec3f(boundsX, boundsY, i));
+            }
         }
     }
 }
@@ -98,7 +103,28 @@ void testApp::draw(){
             if (hlIndex >= 0) {
                 ss << labels[hlIndex] << endl;
             } else { ss << "" << endl; }
+            if (isExported) { ss << "THERE'S ALREADY A PTS FILE FOR THIS" << endl; }
             ofDrawBitmapString(ss.str().c_str(), 20, 20);
+            //draw points & lines for subsection
+            for (int i = 0; i < subbed.size(); i++) {
+                boundsX = subbed[i].x;
+                boundsY = subbed[i].y;
+                
+                ofEllipse(subX + 2*boundsX, subY + 2*boundsY, 10, 10);
+                if (subbed[i].z > 0) {
+                    dirX    = subX + 2*(points[curr][subbed[i].z - 1].x - (mouseX - 25));
+                    dirY    = subY + 2*(points[curr][subbed[i].z - 1].y - (mouseY - 25));
+                    if (subX <= dirX && dirX <= subX + 100 && subY <= dirY && dirY <= subY + 100) {
+                        ofLine(subX + 2*boundsX, subY + 2*boundsY, dirX, dirY);
+                    } else {
+                        false;
+                    }
+                }
+            }
+            ofSetColor(255,0,0);
+            ofFill();
+            ofRect(subX + 50, subY + 50, 10, 10);
+            ofSetColor(255, 255, 255);
         }
     }
     
@@ -132,11 +158,6 @@ void testApp::drawPoints(vector<ofVec2f> pts){
             if (0 < i) {
                 ofLine(pts[i-1].x, pts[i-1].y, cx, cy);
             }
-            boundsX = points[curr][i].x - (mouseX - 25);
-            boundsY = points[curr][i].y - (mouseY - 25);
-            if(0 <= boundsX && boundsX <= 50 && 0 <= boundsY && boundsY <= 50) {
-                ofEllipse(subX + 2*boundsX, subY + 2*boundsY, 10, 10);
-            }
         }
     }
 }
@@ -167,7 +188,7 @@ void testApp::keyReleased(int key){
             if (points[curr].size() > 0)
                 points[curr].erase(points[curr].end());
             break;
-        case 'k': //increment the files
+        case 'k': { //increment the files
             dragged = false;
             highlighted = false;
             if (dir.numFiles() > 0)
@@ -179,18 +200,31 @@ void testApp::keyReleased(int key){
             
                 points.push_back(vector<ofVec2f>());
             }
+            ofFile file = dir.getPath(curr) + ".pts";
+            string path =  dir.getPath(curr) + ".pts";
+            if (file.doesFileExist(path)) {
+                isExported = true;
+            } else { isExported = false; }
             break;
-        case 'j': //decrement the files
+        }
+        case 'j': {//decrement the files
             dragged = false;
             highlighted = false;
             if (dir.numFiles() > 0) {
                 curr = (curr - 1) % dir.numFiles();
                 if (curr < 0) curr = 0;
             }
+            ofFile file = dir.getPath(curr) + ".pts";
+            string path =  dir.getPath(curr) + ".pts";
+            if (file.doesFileExist(path)) {
+                isExported = true;
+            } else { isExported = false; }
             break;
+        }
         case 'e': //export current file
             if (points[curr].size() > 0)
                 exportFile();
+            isExported = true;
             break;
         case 'w': //export all
             break;
