@@ -97,7 +97,7 @@ void testApp::draw(){
 
     if (dir.size() > 0){
         ofSetColor(255,255,255);
-        images[curr].draw(0,0); // draw the fuckin img
+        images[curr].draw(0,0); // draw the img
         
         if (hud == true) { // HUD shit
             ofRect(subX - 2, subY - 2, 104, 104);
