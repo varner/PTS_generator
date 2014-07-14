@@ -21,7 +21,7 @@ void testApp::setup(){
     highlighted = false;
     ofBackground(ofColor::white);
     hud = true;
-    subX = 0;
+    subX = 50;
     subY = 200;
 }
 
@@ -110,12 +110,13 @@ void testApp::draw(){
             ss << "press 'u' to undo" << endl;
             ss << "press 'e' to export current PTS file" << endl;
             ss << "press 'w' to export all PTS files" << endl;
-            ss << dir.getPath(curr) + ".pts" << endl;
+            ss << "click & drag points to reposition" << endl;
+            ss << "---" << endl;
+            if (isExported) { ss << "saved here: " << dir.getPath(curr) + ".pts" << endl; }
             ss << "total number of points: " << points[curr].size() << endl;
             if (hlIndex >= 0) {
-                ss << labels[hlIndex] << endl;
-            } else { ss << "" << endl; }
-            if (isExported) { ss << "THERE'S ALREADY A PTS FILE FOR THIS" << endl; }
+                ss << "last point highlighted: " << labels[hlIndex] << endl;
+            } else { ss << " " << endl; }
             ofDrawBitmapString(ss.str().c_str(), 20, 20);
             //draw points & lines for subsection
             for (int i = 0; i < subbed.size(); i++) {
