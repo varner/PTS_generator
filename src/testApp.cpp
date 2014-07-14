@@ -11,6 +11,12 @@ void testApp::setup(){
         images.push_back(ofImage());
         images.back().loadImage(filePath);
         points.push_back(vector<ofVec2f>());
+        ofFile PTSfile = dir.getPath(curr) + ".pts";
+        string PTSpath =  dir.getPath(curr) + ".pts";
+        if (PTSfile.doesFileExist(PTSpath)) {
+            isExported = true;
+            getPoints(path);
+        } else { isExported = false; }
     } else printf("??? where the fuck is the folder 'imgs'??\n");
     highlighted = false;
     ofBackground(ofColor::white);
@@ -164,6 +170,10 @@ void testApp::drawPoints(vector<ofVec2f> pts){
 
 void testApp::exportFile(){
     string path = dir.getPath(curr) + ".pts";
+    ofFile needReplace = path;
+    if (needReplace.doesFileExist(path)) {
+        needReplace.removeFile(path);
+    }
     ofstream text;
     text.open(ofToDataPath(path).c_str());
     text << points[curr].size() << endl;
@@ -197,14 +207,14 @@ void testApp::keyReleased(int key){
                 string filePath = dir.getPath(curr);
                 images.push_back(ofImage());
                 images.back().loadImage(filePath);
-            
                 points.push_back(vector<ofVec2f>());
+                ofFile file = dir.getPath(curr) + ".pts";
+                string path =  dir.getPath(curr) + ".pts";
+                if (file.doesFileExist(path)) {
+                    isExported = true;
+                    getPoints(path);
+                } else { isExported = false; }
             }
-            ofFile file = dir.getPath(curr) + ".pts";
-            string path =  dir.getPath(curr) + ".pts";
-            if (file.doesFileExist(path)) {
-                isExported = true;
-            } else { isExported = false; }
             break;
         }
         case 'j': {//decrement the files
@@ -228,6 +238,19 @@ void testApp::keyReleased(int key){
             break;
         case 'w': //export all
             break;
+    }
+}
+
+void testApp::getPoints(string path) {
+    ofBuffer buffer = ofBufferFromFile(path);
+    string currentLine = buffer.getFirstLine();
+    while (true) {
+    if (!buffer.isLastLine()) {
+        currentLine = buffer.getNextLine();
+        vector<string> coordinates = ofSplitString(currentLine, " ");
+        ofVec2f v(ofToInt(coordinates[0]), ofToInt(coordinates[1]));
+        points[curr].push_back(v);
+    } else { return; }
     }
 }
 

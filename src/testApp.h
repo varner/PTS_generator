@@ -22,6 +22,7 @@ class testApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
         void drawPoints(vector<ofVec2f> pts);
+        void getPoints(string path);
         void exportFile();
     
         ofDirectory dir;
@@ -29,7 +30,7 @@ class testApp : public ofBaseApp{
         vector< vector<ofVec2f> >  points;
         vector<ofVec3f> subbed;
         string path;        // path to images
-        int curr;           // current image index
+        int curr = 0;           // current image index
         int subX;           // subsection window thing position
         int subY;
         int dirX;
