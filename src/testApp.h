@@ -23,7 +23,7 @@ class testApp : public ofBaseApp{
     
         void drawPoints(vector<ofVec2f> pts);
         void getPoints(string path);
-        void exportFile();
+        void exportFile(int index);
     
         ofDirectory dir;
         vector<ofImage> images;

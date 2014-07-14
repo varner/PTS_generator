@@ -13,9 +13,9 @@ void testApp::setup(){
         points.push_back(vector<ofVec2f>());
         ofFile PTSfile = dir.getPath(curr) + ".pts";
         string PTSpath =  dir.getPath(curr) + ".pts";
-        if (PTSfile.doesFileExist(PTSpath)) {
+        if (PTSfile.doesFileExist(PTSpath) == true) {
             isExported = true;
-            getPoints(path);
+            getPoints(PTSpath);
         } else { isExported = false; }
     } else printf("??? where the fuck is the folder 'imgs'??\n");
     highlighted = false;
@@ -104,6 +104,12 @@ void testApp::draw(){
             images[curr].drawSubsection(subX, subY, 100, 100, mouseX - 25, mouseY - 25, 50, 50);
         
             stringstream ss;
+            ss << "press 'h' to toggle HUD" << endl;
+            ss << "press 'j' to go back one image" << endl;
+            ss << "press 'k' to go forward one image" << endl;
+            ss << "press 'u' to undo" << endl;
+            ss << "press 'e' to export current PTS file" << endl;
+            ss << "press 'w' to export all PTS files" << endl;
             ss << dir.getPath(curr) + ".pts" << endl;
             ss << "total number of points: " << points[curr].size() << endl;
             if (hlIndex >= 0) {
@@ -168,19 +174,21 @@ void testApp::drawPoints(vector<ofVec2f> pts){
     }
 }
 
-void testApp::exportFile(){
-    string path = dir.getPath(curr) + ".pts";
-    ofFile needReplace = path;
-    if (needReplace.doesFileExist(path)) {
-        needReplace.removeFile(path);
+void testApp::exportFile(int index){
+    if (index < points.size() && index >= 0) {
+        string path = dir.getPath(index) + ".pts";
+        ofFile needReplace = path;
+        if (needReplace.doesFileExist(path)) {
+            needReplace.removeFile(path);
+        }
+        ofstream text;
+        text.open(ofToDataPath(path).c_str());
+        text << points[curr].size() << endl;
+        for (int i = 0; i < points[index].size(); i++) {
+            text << points[index][i].x << " " << points[index][i].y << endl;
+        }
+        text.close();
     }
-    ofstream text;
-    text.open(ofToDataPath(path).c_str());
-    text << points[curr].size() << endl;
-    for (int i = 0; i < points[curr].size(); i++) {
-        text << points[curr][i].x << " " << points[curr][i].y << endl;
-    }
-    text.close();
 }
 
 //--------------------------------------------------------------
@@ -233,11 +241,17 @@ void testApp::keyReleased(int key){
         }
         case 'e': //export current file
             if (points[curr].size() > 0)
-                exportFile();
+                exportFile(curr);
             isExported = true;
             break;
-        case 'w': //export all
+        case 'w': {//export all
+            for (int i = 0; i < points.size(); i++) {
+                if (points[i].size() > 0) {
+                    exportFile(i);
+                }
+            }
             break;
+        }
     }
 }
 
