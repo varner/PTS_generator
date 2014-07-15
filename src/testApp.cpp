@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void testApp::setup(){
     dir.allowExt("jpg");
-    int nFiles = dir.listDir("imgs");
+    int nFiles = dir.listDir("");
     curr = 0;
     
     if(nFiles) {
@@ -294,7 +294,7 @@ void testApp::mouseReleased(int x, int y, int button){
     if (button == 0) {
         if (dragged == true) {
             dragged = false;
-        }  else {
+        }  else if (points[curr].size() < 48) {
             ofVec2f v(x,y);
             points[curr].push_back(v);
         }
